@@ -13,8 +13,9 @@ const idToTemplate = cached(id => {
   const el = query(id)
   return el && el.innerHTML
 })
-
+// 保存原始$mount
 const mount = Vue.prototype.$mount
+// 重写$mount方法
 Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean
@@ -31,6 +32,7 @@ Vue.prototype.$mount = function (
 
   const options = this.$options
   // resolve template/el and convert to render function
+  // 处理template或el，然后转化成渲染函数(render function)
   if (!options.render) {
     let template = options.template
     if (template) {
@@ -79,6 +81,7 @@ Vue.prototype.$mount = function (
       }
     }
   }
+  // 调用之前保存的$mount
   return mount.call(this, el, hydrating)
 }
 

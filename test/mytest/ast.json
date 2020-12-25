@@ -1,0 +1,146 @@
+{
+  "tag": "div", // 标签
+  "attrsList": [{ "name": "id", "value": "app" }], // 属性
+  "children": [
+    // 第1个子节点
+    {
+      "tag": "h3", // 标签
+      "attrsList": [], // 属性
+      "children": [
+        {
+          "static": true,
+          "text": "vue模板编译分析",
+          "type": 3
+        }
+      ], // 子节点
+
+      "type": 1,
+      "attrsMap": {},
+      "parent": {
+        //...
+      },
+      "pre": null, // undefined
+      "staticInFor": false,
+      "plain": true,
+      "rawAttrsMap": {},
+      "static": true,
+      "staticRoot": false
+    },
+    // 第2个子节点
+    {
+      "static": true,
+      "text": " ",
+      "type": 3
+    },
+    // 第3个子节点
+    {
+      "tag": "p", // 标签
+      "attrsList": [], // 属性
+      "children": [
+        {
+          "expression": "_s(msg)", // 表达式
+          "static": false,
+          "text": "{{msg}}",
+          "type": 2,
+          "tokens": [
+            {
+              "@binding": "msg"
+            }
+          ]
+        }
+      ], // 子节点
+
+      "type": 1,
+      "attrsMap": {},
+      "parent": {
+        //...
+      },
+      "pre": null, // undefined
+      "plain": true,
+      "rawAttrsMap": {},
+      "static": false,
+      "staticRoot": false
+    },
+    // 第4个子节点
+    {
+      "static": true,
+      "text": " ",
+      "type": 3
+    },
+    // 第5个子节点
+    {
+      "tag": "p", // 标签
+      "attrsList": [], // 属性
+      "children": [
+        {
+          "static": true,
+          "text": "vue模板编译分析",
+          "type": 3
+        }
+      ], // 子节点
+      "if": "shown",
+      "ifConditions": [
+        {
+          "exp": "shown",
+          "block": {
+            // block就是当前节点
+          }
+        }
+      ],
+      "ifProcessed": true,
+      "type": 1,
+      "attrsMap": { "v-if": "shown" },
+      "parent": {
+        //...
+      },
+      "pre": null, // undefined
+      "plain": true,
+      "rawAttrsMap": {},
+      "static": false,
+      "staticRoot": false
+    },
+    // 第6个子节点
+    {
+      "static": true,
+      "text": " ",
+      "type": 3
+    },
+    // 第7个子节点
+    {
+      "tag": "p", // 标签
+      "attrsList": [], // 属性
+      "children": [
+        {
+          "expression": "_s(msg === '你好' ? 'Hello' : 'Front-End Brother')",
+          "static": false,
+          "text": "{{msg === '你好' ? 'Hello' : 'Front-End Brother'}}",
+          "tokens": [
+            {
+              "@binding": "'msg === '你好' ? 'Hello' : 'Front-End Brother'"
+            }
+          ],
+          "type": 2
+        }
+      ], // 子节点
+      "type": 1,
+      "attrsMap": {},
+      "parent": {
+        //...
+      },
+      "pre": null, // undefined
+      "plain": true,
+      "rawAttrsMap": {},
+      "static": false,
+      "staticRoot": false
+    }
+  ], // 子节点
+
+  "type": 1,
+  "attrsMap": { "id": "app" },
+  "attrs": [{ "dynamic": null, "name": "id", "value": "app" }],
+  "parent": null,
+  "plain": false,
+  "rawAttrsMap": {},
+  "static": false,
+  "staticRoot": false
+}

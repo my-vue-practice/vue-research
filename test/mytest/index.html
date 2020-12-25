@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vue 源码分析</title>
+  <script src="../../dist/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <h3>vue 源码分析</h3>
+    <!-- 了解初始化过程 -->
+    <p>{{msg}}</p>
+  </div>
+  <script>
+    window.vm = new Vue({
+      el: '#app',
+      data() {
+        return {
+          msg: 'Hello!'
+        }
+      }
+    });
+    // setTimeout(() => {
+    //   app.msg = 'lzg';
+    // }, 2000)
+  </script>
+</body>
+
+</html>

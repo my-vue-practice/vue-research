@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vue 源码分析 - vdom</title>
+  <script src="../../dist/vue.js"></script>
+</head>
+
+<body>
+  <h3>vue 源码分析 - vdom</h3>
+  <!-- <h4>old: </h4>
+  <div id="root1">
+    <ul class="list">
+      <li class="item">item1</li>
+      <li class="item">item2</li>
+      <li class="item">item3</li>
+    </ul>
+  </div>
+  <h4>new:</h4>
+  <div id="root" class="root">
+    <ul class="list">
+      <li class="item">item3</li>
+      <li class="item">item2</li>
+      <li class="item">item4</li>
+      <li class="item">item5</li>
+    </ul>
+    <p>Hello, P!</p>
+  </div> -->
+  <div id="app">
+    <div :id="id"></div>
+  </div>
+  <script>
+    window.vm = new Vue({
+      el: '#app',
+      data() {
+        return {
+          id: 'root',
+        }
+      },
+      // render(h) {
+      //   return h('div', { id: 'app' }, [
+      //     'string',
+      //     h('ul', { class: 'list' }, [
+      //       h('li', { class: 'item' }, 'item1'),
+      //       h('li', { class: 'item' }, 'item2'),
+      //       h('li', { class: 'item' }, 'item3'),
+      //     ])
+      //   ])
+      // }
+    });
+    setTimeout(() => {
+      vm.id = 'root2'
+    }, 3000)
+  </script>
+</body>
+
+</html>

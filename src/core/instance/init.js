@@ -48,14 +48,25 @@ export function initMixin (Vue: Class<Component>) {
       vm._renderProxy = vm
     }
     // expose real self
+    // 将当前示例暴露到属性：_self
     vm._self = vm
+    // 初始化vm.$parent vm.$children vm.$root vm.$refs
     initLifecycle(vm)
+    // 初始化$listeners
     initEvents(vm)
+    // 初始化 vm.$slots vm.$scopedSlots vm.$createElement
+    // 定义响应式 defineReactive(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true)
+    // 定义响应式 defineReactive(vm, '$listeners', options._parentListeners || emptyObject, null, true)
     initRender(vm)
+    // 调用生命周期方法：beforeCreate
     callHook(vm, 'beforeCreate')
+    // 在data和props之前处理inject
     initInjections(vm) // resolve injections before data/props
+    // 初始化状态，包括：props methods data computed watch
     initState(vm)
+    // 在data和props之后处理provide
     initProvide(vm) // resolve provide after data/props
+    // 调用生命周期方法：created
     callHook(vm, 'created')
 
     /* istanbul ignore if */
@@ -64,7 +75,7 @@ export function initMixin (Vue: Class<Component>) {
       mark(endTag)
       measure(`vue ${vm._name} init`, startTag, endTag)
     }
-
+    // 检测options参数中是否存在el，存在就挂载。
     if (vm.$options.el) {
       vm.$mount(vm.$options.el)
     }

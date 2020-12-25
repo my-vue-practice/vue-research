@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vue 源码分析 - 模板编译</title>
+  <script src="../../dist/vue.js"></script>
+  <!-- <![if !IE]>
+  <link href="non-ie.css" rel="stylesheet">
+  <![endif]> -->
+  <!--[if !IE]>-->
+<!-- <link href="non-ie.css" rel="stylesheet"> -->
+<!--<![endif]-->
+</head>
+
+<body>
+  <br />
+  <div id="app">
+    <h3>vue模板编译分析</h3>
+    <!-- 了解编译过程 -->
+    <p>{{msg}}</p>
+    <p v-if="shown">我显示了吗？</p>
+    <p>{{msg === '你好' ? 'Hello' : 'Front-End Brother'}}</p>
+  </div>
+  <script>
+    window.vm = new Vue({
+      el: '#app',
+      data() {
+        return {
+          msg: '你好',
+          shown: true
+        }
+      }
+    });
+    // setTimeout(() => {
+    //   app.msg = '前端大佬们';
+    //   app.shown = false;
+    // }, 3000)
+  </script>
+</body>
+
+</html>

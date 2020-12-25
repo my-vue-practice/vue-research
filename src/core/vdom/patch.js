@@ -123,13 +123,13 @@ export function createPatchFunction (backend) {
   let creatingElmInVPre = 0
 
   function createElm (
-    vnode,
-    insertedVnodeQueue,
-    parentElm,
-    refElm,
+    vnode,  // 即将插入的节点
+    insertedVnodeQueue, // 已经插入的节点队列
+    parentElm,  // 插入节点的父级节点
+    refElm, // 插入节点的相对节点，插入节点将位于该节点之前，
     nested,
-    ownerArray,
-    index
+    ownerArray, // 已经处理过的节点集合
+    index  // 插入节点索引
   ) {
     if (isDef(vnode.elm) && isDef(ownerArray)) {
       // This vnode was used in a previous render!
@@ -422,46 +422,89 @@ export function createPatchFunction (backend) {
     }
 
     while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+      // 个人理解是边界处理
       if (isUndef(oldStartVnode)) {
         oldStartVnode = oldCh[++oldStartIdx] // Vnode has been moved left
       } else if (isUndef(oldEndVnode)) {
         oldEndVnode = oldCh[--oldEndIdx]
-      } else if (sameVnode(oldStartVnode, newStartVnode)) {
+      }
+      // 旧首 比 新首
+      else if (sameVnode(oldStartVnode, newStartVnode)) {
         patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
         oldStartVnode = oldCh[++oldStartIdx]
         newStartVnode = newCh[++newStartIdx]
-      } else if (sameVnode(oldEndVnode, newEndVnode)) {
+      }
+      // 旧尾 比 新尾
+      else if (sameVnode(oldEndVnode, newEndVnode)) {
         patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)
         oldEndVnode = oldCh[--oldEndIdx]
         newEndVnode = newCh[--newEndIdx]
-      } else if (sameVnode(oldStartVnode, newEndVnode)) { // Vnode moved right
+      }
+      // 旧首 比 新尾
+      else if (sameVnode(oldStartVnode, newEndVnode)) { // Vnode moved right
+        // 旧首和新尾相同，更新旧首vnode节点
         patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)
+        // 移动旧首vnode到队尾
         canMove && nodeOps.insertBefore(parentElm, oldStartVnode.elm, nodeOps.nextSibling(oldEndVnode.elm))
         oldStartVnode = oldCh[++oldStartIdx]
         newEndVnode = newCh[--newEndIdx]
-      } else if (sameVnode(oldEndVnode, newStartVnode)) { // Vnode moved left
+      }
+      // 旧尾 比 新首
+      else if (sameVnode(oldEndVnode, newStartVnode)) { // Vnode moved left
         patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
         canMove && nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm)
         oldEndVnode = oldCh[--oldEndIdx]
         newStartVnode = newCh[++newStartIdx]
-      } else {
+      }
+      // 如果没找到相同的vnode
+      else {
+        /*
+          function createKeyToOldIdx (children, beginIdx, endIdx) {
+            let i, key
+            const map = {}
+            for (i = beginIdx; i <= endIdx; ++i) {
+              key = children[i].key
+              if (isDef(key)) map[key] = i
+            }
+            return map
+          }
+        */
+        // oldKeyToIdx 旧VNode的key与索引的映射map：{'key1': 0, 'key2': 1, 'key3': 2, ...}
         if (isUndef(oldKeyToIdx)) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx)
+        // 拿到newStartVnode的key，如果存在，从上面获取的map去找索引，否则。。。去oldCh里面查找，找到返回索引值。
         idxInOld = isDef(newStartVnode.key)
+          // 如果key存在，则去上面获取的map中获取其索引
           ? oldKeyToIdx[newStartVnode.key]
+          // 如果key不存在，则拿当前新开始节点（newStartVnode）去oldCh剩余的节点中匹配节点，找到相同节点则返回其索引。
+          /*
+              function findIdxInOld (node, oldCh, start, end) {
+                for (let i = start; i < end; i++) {
+                  const c = oldCh[i]
+                  if (isDef(c) && sameVnode(node, c)) return i
+                }
+              }
+          */
           : findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx)
+        // 上面两种方式都没找到“相同的节点”，则认为是新节点，就执行创建（创建的节点应该放在哪里？）
         if (isUndef(idxInOld)) { // New element
           createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, false, newCh, newStartIdx)
-        } else {
+        }
+        // 找到了
+        else {
           vnodeToMove = oldCh[idxInOld]
+          // vnodeToMove 和 newStartVnode 相同，则调用patchVnode进行更新
           if (sameVnode(vnodeToMove, newStartVnode)) {
             patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
             oldCh[idxInOld] = undefined
             canMove && nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm)
-          } else {
+          }
+          // 上面找到了可能只是key相同，但element不同，所以将其当做新节点创建。
+          else {
             // same key but different element. treat as new element
             createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, false, newCh, newStartIdx)
           }
         }
+        // 将新开始节点往后移动一位
         newStartVnode = newCh[++newStartIdx]
       }
     }
@@ -499,11 +542,11 @@ export function createPatchFunction (backend) {
   }
 
   function patchVnode (
-    oldVnode,
-    vnode,
-    insertedVnodeQueue,
-    ownerArray,
-    index,
+    oldVnode, // 老虚拟DOM
+    vnode,  // 新虚拟DOM
+    insertedVnodeQueue, //? 已经插入的vnode队列
+    ownerArray, // 存储处理过的（新）vnode
+    index,  // 当前（新）vnode在列表中的索引
     removeOnly
   ) {
     if (oldVnode === vnode) {
@@ -539,36 +582,53 @@ export function createPatchFunction (backend) {
       return
     }
 
+    // 从这里开始
     let i
+    // data: dom属性
     const data = vnode.data
+
+    // 打补丁前，执行prepatch钩子，如果有。
     if (isDef(data) && isDef(i = data.hook) && isDef(i = i.prepatch)) {
       i(oldVnode, vnode)
     }
 
+    // 老VNode的子节点
     const oldCh = oldVnode.children
+    // 新VNode的子节点
     const ch = vnode.children
+    // 新Vnode存在data属性（且可patch，存在tag），更新属性
     if (isDef(data) && isPatchable(vnode)) {
       for (i = 0; i < cbs.update.length; ++i) cbs.update[i](oldVnode, vnode)
       if (isDef(i = data.hook) && isDef(i = i.update)) i(oldVnode, vnode)
     }
+    // 新Vnode不是文本节点
     if (isUndef(vnode.text)) {
+      // 新老Vnode都存在children，
       if (isDef(oldCh) && isDef(ch)) {
+        // 且新老Vnode的children不相等，则进行diff算法比较，
+        //! 这里是重难点
         if (oldCh !== ch) updateChildren(elm, oldCh, ch, insertedVnodeQueue, removeOnly)
       } else if (isDef(ch)) {
         if (process.env.NODE_ENV !== 'production') {
           checkDuplicateKeys(ch)
         }
+        // 旧Vnode children为文本，新Vnode存在children，将旧Vnode children清空，将新Vnode children添加进去。
         if (isDef(oldVnode.text)) nodeOps.setTextContent(elm, '')
         addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue)
-      } else if (isDef(oldCh)) {
+      }
+      // 新Vnode不存在children，则将旧Vnode children删除。
+      else if (isDef(oldCh)) {
         removeVnodes(oldCh, 0, oldCh.length - 1)
       } else if (isDef(oldVnode.text)) {
+        // 如果旧Vnode children是文本，则清空。
         nodeOps.setTextContent(elm, '')
       }
     } else if (oldVnode.text !== vnode.text) {
+      // 新、旧Vnode children都是文本，且不相等，则替换。
       nodeOps.setTextContent(elm, vnode.text)
     }
     if (isDef(data)) {
+      // 打补丁之后，执行钩子postpatch，如果有。
       if (isDef(i = data.hook) && isDef(i = i.postpatch)) i(oldVnode, vnode)
     }
   }
